@@ -33,6 +33,8 @@ class GestorIncidencias {
     for (var i = 0; i < incidencias.length; i++) {
       if (incidencias[i].id == id) {
         incidencias[i].estado = estado;
+        // guarda los cambios en el almacenamiento local, asi la funcion "crear" tambien lo hace
+        await datos.guardar(incidencias);
         break;
       }
     }
