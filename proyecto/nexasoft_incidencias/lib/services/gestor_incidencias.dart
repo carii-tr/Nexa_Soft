@@ -61,8 +61,19 @@ class GestorIncidencias {
     }
   }
 
+  Future<void> cambiarNivel(String id, String nivel) async {
+    for (var i = 0; i < incidencias.length; i++) {
+      if (incidencias[i].id == id) {
+        incidencias[i].nivel = nivel;
+        // guarda los cambios en el almacenamiento local, asi la funcion "crear" tambien lo hace
+        await datos.guardar(incidencias);
+        break;
+      }
+    }
+  }
+
   Future<void> crear(String titulo, String descripcion, String cliente,
-      String categoria) async {
+      String categoria, String nivel) async {
     final nuevo = Incidencia(
       id: 'INC-${DateTime.now().microsecondsSinceEpoch}',
       titulo: titulo,
@@ -70,6 +81,7 @@ class GestorIncidencias {
       cliente: cliente,
       categoria: categoria,
       estado: 'Pendiente',
+      nivel: nivel,
       fecha: DateTime.now().toIso8601String().split('T').first,
     );
     incidencias.insert(0, nuevo);

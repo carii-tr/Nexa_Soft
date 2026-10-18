@@ -29,6 +29,21 @@ class _PantallaDetalleState extends State<PantallaDetalle> {
     }
   }
 
+  Future<void> cambiarNivel(String? valor) async {
+    if (valor == null) return;
+    setState(() => guardando = true);
+    try {
+      await widget.gestor.cambiarNivel(widget.id, valor);
+      if (mounted) setState(() {});
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('No se pudo guardar la prioridad: $e')));
+      }
+    } finally {
+      if (mounted) setState(() => guardando = false);
+    }
+  }
+
   Widget fila(String etiqueta, String valor) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 7),
@@ -77,6 +92,20 @@ class _PantallaDetalleState extends State<PantallaDetalle> {
                           .toList(),
                       onChanged: guardando ? null : cambiar,
                     ),
+
+                    const SizedBox(height: 16),
+                    
+                    // para poder cambiar el nivel de prioridad, agregamos otro DropdownButtonFormField
+                    DropdownButtonFormField<String>(
+                      value: item.nivel,
+                      decoration: const InputDecoration(labelText: 'Nivel de prioridad', border: OutlineInputBorder()),
+                      items: ['Baja', 'Media', 'Alta']
+                          .map((v) => DropdownMenuItem(value: v, child: Text(v)))
+                          .toList(),
+                      onChanged: guardando ? null : cambiarNivel,
+                    ),
+
+
                     if (guardando) const Padding(
                       padding: EdgeInsets.only(top: 12), child: LinearProgressIndicator(),
                     ),

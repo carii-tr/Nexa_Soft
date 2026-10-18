@@ -15,6 +15,7 @@ class _PantallaNuevaState extends State<PantallaNueva> {
   final descripcion = TextEditingController();
   final cliente = TextEditingController();
   String categoria = 'Software';
+  String nivel = 'Media';
   bool ocupado = false;
 
   @override
@@ -30,7 +31,7 @@ class _PantallaNuevaState extends State<PantallaNueva> {
     setState(() => ocupado = true);
     try {
       await widget.gestor.crear(
-        titulo.text.trim(), descripcion.text.trim(), cliente.text.trim(), categoria,
+        titulo.text.trim(), descripcion.text.trim(), cliente.text.trim(), categoria, nivel,
       );
       if (mounted) Navigator.pop(context, true);
     } catch (e) {
@@ -78,6 +79,18 @@ class _PantallaNuevaState extends State<PantallaNueva> {
                       .map((c) => DropdownMenuItem(value: c, child: Text(c))).toList(),
                   onChanged: ocupado ? null : (v) => setState(() => categoria = v ?? 'Software'),
                 ),
+
+                const SizedBox(height: 15),
+
+                // permite elegir nivel de prioridad al crear una nueva incidencia
+                DropdownButtonFormField<String>(
+                  value: nivel,
+                  decoration: const InputDecoration(labelText: 'Nivel de prioridad', border: OutlineInputBorder()),
+                  items: ['Baja', 'Media', 'Alta']
+                      .map((v) => DropdownMenuItem(value: v, child: Text(v))).toList(),
+                  onChanged: ocupado ? null : (v) => setState(() => nivel = v ?? 'Media'),
+                ),
+
                 const SizedBox(height: 24),
                 FilledButton.icon(
                   onPressed: ocupado ? null : guardar,

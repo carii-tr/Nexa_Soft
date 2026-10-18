@@ -42,6 +42,12 @@ class _PantallaPrincipalState extends State<PantallaPrincipal> {
     return const Color(0xFFAC4052);
   }
 
+  Color colorNivel(String nivel) {
+    if (nivel == 'Alta') return const Color(0xFFAC4052);
+    if (nivel == 'Media') return const Color(0xFFB56B13);
+    return const Color(0xFF147D64);
+  }
+
   Widget resumen(String etiqueta, String valor, IconData icono) {
     return Expanded(
       child: Card(
@@ -188,8 +194,20 @@ class _PantallaPrincipalState extends State<PantallaPrincipal> {
                                               Text('${item.id}  ·  ${item.cliente}'),
                                               const SizedBox(height: 6),
                                               Text(item.estado, style: TextStyle(
-                                                color: colorEstado(item.estado), fontWeight: FontWeight.bold,
+                                                color: colorEstado(item.estado), 
+                                                fontWeight: FontWeight.bold,
                                               )),
+
+                                              const SizedBox(height: 6),
+
+                                              // FEAT-001: nivel de prioridad
+                                              Text(
+                                                'Prioridad: ${item.nivel}',
+                                                style: TextStyle(
+                                                  color: colorNivel(item.nivel),
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
                                             ],
                                           ),
                                         ),
