@@ -18,13 +18,13 @@ class GestorIncidencias {
     return incidencias.where((x) => x.titulo.contains(texto)).toList();
   }
   */
-  List<Incidencia> buscar(String texto) {
+  List<Incidencia> buscar(String texto, String estado, String nivel) {
     // convertir el texto de búsqueda a minúsculas y eliminar espacios en blanco al inicio y al final
     final consulta = texto.trim().toLowerCase();
 
-    if (consulta.isEmpty) {
-      return incidencias;
-    }
+    // if (consulta.isEmpty) {
+    //   return incidencias;
+    // }
     
     // filtrar las incidencias que contengan el texto de búsqueda en el título o la descripción
     return incidencias.where((x) {
@@ -33,11 +33,24 @@ class GestorIncidencias {
       // este para la descripcion
       final descripcion = x.descripcion.toLowerCase();
 
-      // encontar coincidencias en el título o la descripción
-      return titulo.contains(consulta) ||
-          descripcion.contains(consulta);
+      // para el texto, si está vacío, se consideran todas las incidencias.
+      final textoCoincide = consulta.isEmpty ||
+        titulo.contains(consulta) ||
+        descripcion.contains(consulta);
+
+      // para el estado, si no pone se consideran todos los estados
+      final estadoCoincide = estado == 'Todos' || x.estado == estado;
+
+      // para el nivel, si no pone se consideran todos los niveles
+      final nivelCoincide = nivel == 'Todos' || x.nivel == nivel;
+
+      // encontar coincidencias en el título o la descripción y que el estado y nivel coincidan
+      return textoCoincide &&
+          estadoCoincide &&
+          nivelCoincide;
     }).toList();
   }
+
   Incidencia? porId(String id) {
     for (var x in incidencias) {
       if (x.id == id) return x;

@@ -17,6 +17,10 @@ class _PantallaPrincipalState extends State<PantallaPrincipal> {
   String? error;
   String busqueda = '';
 
+  // se usan para FEAT-002 y sirven para filtrar las incidencias por estado y nivel de prioridad
+  String estadoFiltro = 'Todos';
+  String nivelFiltro = 'Todos';
+
   @override
   void initState() {
     super.initState();
@@ -90,7 +94,7 @@ class _PantallaPrincipalState extends State<PantallaPrincipal> {
 
   @override
   Widget build(BuildContext context) {
-    final items = g.buscar(busqueda);
+    final items = g.buscar(busqueda, estadoFiltro, nivelFiltro);
     return Scaffold(
       appBar: AppBar(
         title: const Text('NexaSoft | Incidencias'),
@@ -146,6 +150,8 @@ class _PantallaPrincipalState extends State<PantallaPrincipal> {
                     constraints: const BoxConstraints(maxWidth: 860),
                     child: Column(
                       children: [
+
+                        // FEAT-002 poder elegir filtros
                         Padding(
                           padding: const EdgeInsets.fromLTRB(12, 14, 12, 8),
                           child: Row(children: [
@@ -166,6 +172,75 @@ class _PantallaPrincipalState extends State<PantallaPrincipal> {
                             onChanged: (texto) => setState(() => busqueda = texto),
                           ),
                         ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 17, vertical: 5),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: DropdownButtonFormField<String>(
+                                  key: ValueKey('estado-$estadoFiltro'),
+                                  initialValue: estadoFiltro,
+                                  decoration: const InputDecoration(
+                                    labelText: 'Estado',
+                                    border: OutlineInputBorder(),
+                                  ),
+                                  items: ['Todos', 'Pendiente', 'En proceso', 'Resuelta']
+                                      .map((estado) => DropdownMenuItem(
+                                            value: estado,
+                                            child: Text(estado),
+                                          ))
+                                      .toList(),
+                                  onChanged: (valor) {
+                                    if (valor != null) {
+                                      setState(() => estadoFiltro = valor);
+                                    }
+                                  },
+                                ),
+                              ),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: DropdownButtonFormField<String>(
+                                  key: ValueKey('prioridad-$nivelFiltro'),
+                                  initialValue: nivelFiltro,
+                                  decoration: const InputDecoration(
+                                    labelText: 'Prioridad',
+                                    border: OutlineInputBorder(),
+                                  ),
+                                  items: ['Todos', 'Baja', 'Media', 'Alta']
+                                      .map((nivel) => DropdownMenuItem(
+                                            value: nivel,
+                                            child: Text(nivel),
+                                          ))
+                                      .toList(),
+                                  onChanged: (valor) {
+                                    if (valor != null) {
+                                      setState(() => nivelFiltro = valor);
+                                    }
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+
+                        // FEAT-002 limpiar filtros
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 17, vertical: 5),
+                          child: Align(
+                            alignment: Alignment.centerRight,
+                            child: OutlinedButton.icon(
+                              onPressed: () {
+                                setState(() {
+                                  estadoFiltro = 'Todos';
+                                  nivelFiltro = 'Todos';
+                                });
+                              },
+                              icon: const Icon(Icons.filter_alt_off),
+                              label: const Text('Limpiar filtros'),
+                            ),
+                          ),
+                        ),
+
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 4),
                           child: Align(
